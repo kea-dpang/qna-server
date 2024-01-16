@@ -18,16 +18,17 @@ import java.util.List;
 @RequestMapping("/posts")
 public class QnaController {
     private final QnaServiceImpl qnaService;
-    @PostMapping("/onetooneqna")
-    public void postQna(@ModelAttribute QnaCreateRequestDto request){
+    @PostMapping("")
+    public void postQna(@RequestBody QnaCreateRequestDto request){
+        qnaService.createQna(request);
     }
     @PatchMapping("")
-    public void updateQna(@ModelAttribute QnaUpdateRequestDto request){
-
+    public void updateQna(@RequestBody QnaUpdateRequestDto request){
+        qnaService.updateQna(request);
     }
     @PatchMapping("")
-    public void updateAnswerQna(@ModelAttribute QnaAnswerRequest request){
-
+    public void updateAnswerQna(@RequestBody QnaAnswerRequest request){
+        qnaService.updateAnswerQna(request);
     }
     @GetMapping("")
     public List<AllQnaGetResponseDto> getAllQna(){
@@ -38,5 +39,7 @@ public class QnaController {
         return qnaService.getQna(qnaId);
     }
     @DeleteMapping("")
-    public void deleteQna(@RequestParam)
+    public void deleteQna(@RequestParam List<Long> ids){
+        qnaService.deleteQna(ids);
+    }
 }

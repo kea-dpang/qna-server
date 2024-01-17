@@ -9,13 +9,13 @@ import kea.dpang.qna.entity.QnaEntity;
 import kea.dpang.qna.repository.QnaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class QnaServiceImpl implements QnaService{
     private final QnaRepository qnaRepository;
     @Override
@@ -33,8 +33,8 @@ public class QnaServiceImpl implements QnaService{
     }
 
     @Override
-    public void updateQna(QnaUpdateRequestDto request) {
-        QnaEntity qna = qnaRepository.findById(request.getQna_id()).get();
+    public void updateQna(Long qnaId, QnaUpdateRequestDto request) {
+        QnaEntity qna = qnaRepository.findById(qnaId).get();
         qna.updateQnaEntity(
                 request.getItem_id(),
                 request.getTitle(),
@@ -56,13 +56,30 @@ public class QnaServiceImpl implements QnaService{
     @Override
     public List<AllQnaGetResponseDto> getAllQna(){
         List<QnaEntity> qnaList = qnaRepository.findAll();
-        List<AllQnaGetResponseDto> qnaReturn = new ArrayList<AllQnaGetResponseDto>();
+        List<AllQnaGetResponseDto> qnaReturn = new ArrayList<>();
         for (QnaEntity qna:qnaList){
             AllQnaGetResponseDto qnaGet = new AllQnaGetResponseDto(
                     qna.getId(),
                     qna.getCategory(),
                     qna.getTitle(),
-                    qna.getState()
+                    qna.getState(),
+                    qna.getCreated_at()
+            );
+            qnaReturn.add(qnaGet);
+        }
+        return qnaReturn;
+    }
+    @Override
+    public List<AllQnaGetResponseDto> getUserQna(Iterable<Long> request){
+        List<QnaEntity> qnaList = qnaRepository.findAllById(request);
+        List<AllQnaGetResponseDto> qnaReturn = new ArrayList<>();
+        for (QnaEntity qna:qnaList){
+            AllQnaGetResponseDto qnaGet = new AllQnaGetResponseDto(
+                    qna.getId(),
+                    qna.getCategory(),
+                    qna.getTitle(),
+                    qna.getState(),
+                    qna.getCreated_at()
             );
             qnaReturn.add(qnaGet);
         }
@@ -76,8 +93,8 @@ public class QnaServiceImpl implements QnaService{
     }
 
     @Override
-    public void updateAnswerQna(QnaAnswerRequest request){
-        QnaEntity qna = qnaRepository.findById(request.getQna_id()).get();
+    public void updateAnswerQna(Long qnaId, QnaAnswerRequest request){
+        QnaEntity qna = qnaRepository.findById(qnaId).get();
         qna.updateAnswerQna(
                 request.getResponder_id(),
                 request.getAnswer()

@@ -18,27 +18,31 @@ import java.util.List;
 @RequestMapping("/posts")
 public class QnaController {
     private final QnaServiceImpl qnaService;
-    @PostMapping("")
+    @PostMapping("/onetooneqna")
     public void postQna(@RequestBody QnaCreateRequestDto request){
         qnaService.createQna(request);
     }
-    @PatchMapping("")
-    public void updateQna(@RequestBody QnaUpdateRequestDto request){
-        qnaService.updateQna(request);
+    @PatchMapping("/{postId}")
+    public void updateQna(@PathParam("postId") Long postId, @RequestBody QnaUpdateRequestDto request){
+        qnaService.updateQna(postId, request);
     }
-    @PatchMapping("")
-    public void updateAnswerQna(@RequestBody QnaAnswerRequest request){
-        qnaService.updateAnswerQna(request);
+    @PatchMapping("/{postId}/answer")
+    public void updateAnswerQna(@PathParam("postId") Long postId, @RequestBody QnaAnswerRequest request){
+        qnaService.updateAnswerQna(postId, request);
     }
-    @GetMapping("")
+    @GetMapping("/")
     public List<AllQnaGetResponseDto> getAllQna(){
         return qnaService.getAllQna();
+    }
+    @GetMapping("/{userId}/customerqna")
+    public List<AllQnaGetResponseDto> getUserQna(@PathParam("userId") Iterable<Long> userId ){
+        return qnaService.getUserQna(userId);
     }
     @GetMapping("/{qnaId}")
     public QnaGetResponseDto getQna(@PathParam("qnaId") Long qnaId){
         return qnaService.getQna(qnaId);
     }
-    @DeleteMapping("")
+    @DeleteMapping("/")
     public void deleteQna(@RequestParam List<Long> ids){
         qnaService.deleteQna(ids);
     }

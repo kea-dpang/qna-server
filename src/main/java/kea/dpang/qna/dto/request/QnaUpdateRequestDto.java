@@ -6,7 +6,6 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class QnaUpdateRequestDto {
-    private Long qna_id;
     private Long item_id;
     private String title;
     private String category;

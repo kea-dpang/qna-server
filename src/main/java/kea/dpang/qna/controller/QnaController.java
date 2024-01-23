@@ -18,6 +18,10 @@ import java.util.List;
 @RequestMapping("/posts")
 public class QnaController {
     private final QnaServiceImpl qnaService;
+    @GetMapping("/gatewaytest")
+    public String gatewaytest(@RequestHeader("token") String token){
+        return token;
+    }
     @PostMapping("/onetooneqna")
     public void postQna(@RequestBody QnaCreateRequestDto request){
         qnaService.createQna(request);

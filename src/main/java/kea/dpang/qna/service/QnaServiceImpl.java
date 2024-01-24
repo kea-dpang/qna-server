@@ -20,15 +20,16 @@ public class QnaServiceImpl implements QnaService{
     private final QnaRepository qnaRepository;
     @Override
     public void createQna(QnaCreateRequestDto request) {
-        QnaEntity qna = new QnaEntity(
-                request.getUserID(),
-                request.getTitle(),
-                request.getInquiryType1(),
-                request.getContents(),
-                request.getAgree(),
-                request.getItemId(),
-                request.getImage()
-        );
+        QnaEntity qna = QnaEntity.builder()
+                .author_id(request.getUserID())
+                .title(request.getTitle())
+                .category(request.getInquiryType1())
+                .question(request.getContents())
+                .is_public(request.getAgree())
+                .item_id(request.getItemId())
+                .attachment_url(request.getImage())
+                .state("1")
+                .build();
         qnaRepository.save(qna);
     }
 
@@ -43,7 +44,6 @@ public class QnaServiceImpl implements QnaService{
                 request.getAttachment_url(),
                 request.getIs_public()
                 );
-        qnaRepository.save(qna);
     }
 
     @Override
@@ -56,31 +56,24 @@ public class QnaServiceImpl implements QnaService{
     @Override
     public List<AllQnaGetResponseDto> getAllQna(){
         List<QnaEntity> qnaList = qnaRepository.findAll();
-        List<AllQnaGetResponseDto> qnaReturn = new ArrayList<>();
-        for (QnaEntity qna:qnaList){
-            AllQnaGetResponseDto qnaGet = new AllQnaGetResponseDto(
-                    qna.getId(),
-                    qna.getCategory(),
-                    qna.getTitle(),
-                    qna.getState(),
-                    qna.getCreated_at()
-            );
-            qnaReturn.add(qnaGet);
-        }
-        return qnaReturn;
+        return qnaReturn(qnaList);
     }
     @Override
     public List<AllQnaGetResponseDto> getUserQna(Iterable<Long> request){
         List<QnaEntity> qnaList = qnaRepository.findAllById(request);
+        return qnaReturn(qnaList);
+    }
+
+    private List<AllQnaGetResponseDto> qnaReturn(List<QnaEntity> qnaList) {
         List<AllQnaGetResponseDto> qnaReturn = new ArrayList<>();
         for (QnaEntity qna:qnaList){
-            AllQnaGetResponseDto qnaGet = new AllQnaGetResponseDto(
-                    qna.getId(),
-                    qna.getCategory(),
-                    qna.getTitle(),
-                    qna.getState(),
-                    qna.getCreated_at()
-            );
+            AllQnaGetResponseDto qnaGet = AllQnaGetResponseDto.builder()
+                    .qna_id(qna.getId())
+                    .category(qna.getCategory())
+                    .title(qna.getTitle())
+                    .status(qna.getState())
+                    .created_at(qna.getCreated_at())
+                    .build();
             qnaReturn.add(qnaGet);
         }
         return qnaReturn;
@@ -89,7 +82,21 @@ public class QnaServiceImpl implements QnaService{
     @Override
     public QnaGetResponseDto getQna(Long request) {
         QnaEntity qna = qnaRepository.findById(request).get();
-        return new QnaGetResponseDto(qna);
+        return QnaGetResponseDto.builder()
+                .qna_id(qna.getId())
+                .author_id(qna.getAuthor_id())
+                .responder_id(qna.getResponder_id())
+                .item_id(qna.getItem_id())
+                .title(qna.getTitle())
+                .category(qna.getCategory())
+                .question(qna.getQuestion())
+                .attachment_url(qna.getAttachment_url())
+                .state(qna.getState())
+                .answer(qna.getAnswer())
+                .is_public(qna.getIs_public())
+                .created_at(qna.getCreated_at())
+                .updated_at(qna.getUpdated_at())
+                .build();
     }
 
     @Override
@@ -99,6 +106,5 @@ public class QnaServiceImpl implements QnaService{
                 request.getResponder_id(),
                 request.getAnswer()
         );
-        qnaRepository.save(qna);
     }
 }

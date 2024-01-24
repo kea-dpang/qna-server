@@ -1,6 +1,8 @@
 package kea.dpang.qna.entity;
 
 import jakarta.persistence.*;
+import kea.dpang.qna.dto.request.QnaCreateRequestDto;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,44 +14,58 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 public class QnaEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column
     private Long author_id;
+
     @Column
     private Long responder_id;
+
     @Column
     private Long item_id;
+
     @Column
     private String title;
+
     @Column
     private String category;
+
     @Column
     private String question;
+
     @Column
     private String attachment_url;
+
     @Column
     private String state;
+
     @Column
     private String answer;
+
     @Column
     private Boolean is_public;
+
     @CreationTimestamp
     private LocalDateTime created_at;
+
     @UpdateTimestamp
     private LocalDateTime updated_at;
 
-    public QnaEntity(Long author_id, String title, String category, String question, Boolean is_public, Long itemId, String attachment_url) {
+    @Builder
+    public QnaEntity(Long author_id, Long responder_id, Long item_id, String title, String category, String question, String attachment_url, String state, String answer, Boolean is_public) {
         this.author_id = author_id;
-        this.responder_id = null;
-        this.item_id = itemId;
+        this.responder_id = responder_id;
+        this.item_id = item_id;
         this.title = title;
         this.category = category;
         this.question = question;
         this.attachment_url = attachment_url;
-        this.state = "1";
-        this.answer = null;
+        this.state = state;
+        this.answer = answer;
         this.is_public = is_public;
     }
 

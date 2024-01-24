@@ -1,11 +1,9 @@
 package kea.dpang.qna.dto.response;
 
-import kea.dpang.qna.entity.QnaEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @AllArgsConstructor
 @Builder

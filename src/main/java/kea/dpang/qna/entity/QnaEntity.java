@@ -1,13 +1,12 @@
 package kea.dpang.qna.entity;
 
 import jakarta.persistence.*;
-import kea.dpang.qna.dto.request.QnaCreateRequestDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -78,7 +77,7 @@ public class QnaEntity {
         this.is_public = is_public;
     }
 
-    public void updateAnswerQna(Long responder_id, String answer){
+    public void updateAnswerQna(Long responder_id, String answer) {
         this.responder_id = responder_id;
         this.answer = answer;
         this.state = "2";

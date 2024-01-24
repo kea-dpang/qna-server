@@ -14,43 +14,51 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Tag(name="QnA",description = "qna 서비스 api")
+@Tag(name = "QnA", description = "qna 서비스 api")
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/posts")
+@RequestMapping("/posts/qna")
 public class QnaController {
 
     private final QnaServiceImpl qnaService;
 
     @GetMapping("/gatewaytest")
-    public String gatewaytest(@RequestHeader("token") String token){ return token; }
+    public String gatewaytest(@RequestHeader("token") String token) {
+        return token;
+    }
 
     @PostMapping("/onetooneqna")
-    public void postQna(@RequestBody QnaCreateRequestDto request){
+    public void postQna(@RequestBody QnaCreateRequestDto request) {
         qnaService.createQna(request);
     }
 
     @PatchMapping("/{postId}")
-    public void updateQna(@PathParam("postId") Long postId, @RequestBody QnaUpdateRequestDto request){ qnaService.updateQna(postId, request); }
+    public void updateQna(@PathParam("postId") Long postId, @RequestBody QnaUpdateRequestDto request) {
+        qnaService.updateQna(postId, request);
+    }
 
     @PatchMapping("/{postId}/answer")
-    public void updateAnswerQna(@PathParam("postId") Long postId, @RequestBody QnaAnswerRequest request){ qnaService.updateAnswerQna(postId, request); }
+    public void updateAnswerQna(@PathParam("postId") Long postId, @RequestBody QnaAnswerRequest request) {
+        qnaService.updateAnswerQna(postId, request);
+    }
 
     @GetMapping
-    public List<AllQnaGetResponseDto> getAllQna(){
+    public List<AllQnaGetResponseDto> getAllQna() {
         return qnaService.getAllQna();
     }
 
     @GetMapping("/{userId}/customerqna")
-    public List<AllQnaGetResponseDto> getUserQna(@PathParam("userId") Iterable<Long> userId ){ return qnaService.getUserQna(userId); }
+    public List<AllQnaGetResponseDto> getUserQna(@PathParam("userId") Iterable<Long> userId) {
+        return qnaService.getUserQna(userId);
+    }
 
     @GetMapping("/{qnaId}")
-    public QnaGetResponseDto getQna(@PathParam("qnaId") Long qnaId){
+    public QnaGetResponseDto getQna(@PathParam("qnaId") Long qnaId) {
         return qnaService.getQna(qnaId);
     }
 
     @DeleteMapping
-    public void deleteQna(@RequestParam List<Long> ids){
+    public void deleteQna(@RequestParam List<Long> ids) {
         qnaService.deleteQna(ids);
     }
 

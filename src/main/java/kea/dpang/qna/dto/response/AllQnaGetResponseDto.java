@@ -3,7 +3,6 @@ package kea.dpang.qna.dto.response;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @AllArgsConstructor

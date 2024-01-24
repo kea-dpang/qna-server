@@ -13,11 +13,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class QnaServiceImpl implements QnaService{
+public class QnaServiceImpl implements QnaService {
     private final QnaRepository qnaRepository;
+
     @Override
     public void createQna(QnaCreateRequestDto request) {
         QnaEntity qna = QnaEntity.builder()
@@ -43,30 +45,31 @@ public class QnaServiceImpl implements QnaService{
                 request.getQuestion(),
                 request.getAttachment_url(),
                 request.getIs_public()
-                );
+        );
     }
 
     @Override
     public void deleteQna(List<Long> request) {
-        for (Long id:request) {
+        for (Long id : request) {
             qnaRepository.deleteById(id);
         }
     }
 
     @Override
-    public List<AllQnaGetResponseDto> getAllQna(){
+    public List<AllQnaGetResponseDto> getAllQna() {
         List<QnaEntity> qnaList = qnaRepository.findAll();
         return qnaReturn(qnaList);
     }
+
     @Override
-    public List<AllQnaGetResponseDto> getUserQna(Iterable<Long> request){
+    public List<AllQnaGetResponseDto> getUserQna(Iterable<Long> request) {
         List<QnaEntity> qnaList = qnaRepository.findAllById(request);
         return qnaReturn(qnaList);
     }
 
     private List<AllQnaGetResponseDto> qnaReturn(List<QnaEntity> qnaList) {
         List<AllQnaGetResponseDto> qnaReturn = new ArrayList<>();
-        for (QnaEntity qna:qnaList){
+        for (QnaEntity qna : qnaList) {
             AllQnaGetResponseDto qnaGet = AllQnaGetResponseDto.builder()
                     .qna_id(qna.getId())
                     .category(qna.getCategory())
@@ -100,7 +103,7 @@ public class QnaServiceImpl implements QnaService{
     }
 
     @Override
-    public void updateAnswerQna(Long qnaId, QnaAnswerRequest request){
+    public void updateAnswerQna(Long qnaId, QnaAnswerRequest request) {
         QnaEntity qna = qnaRepository.findById(qnaId).get();
         qna.updateAnswerQna(
                 request.getResponder_id(),

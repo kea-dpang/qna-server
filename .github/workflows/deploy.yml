@@ -64,7 +64,7 @@ jobs:
         run: echo "DIRECTORY_NAME=$(echo ${{ secrets.IMAGE_NAME }} | cut -d'/' -f2)" >> $GITHUB_ENV
 
       - name: Update image version
-        run: sed -i 's|${{ secrets.KC_REGISTRY_URL }}/${{ secrets.IMAGE_NAME }}.*|${{ secrets.KC_REGISTRY_URL }}/${{ secrets.IMAGE_NAME }}:${{ github.event.release.tag_name }}|' ./backend/${{ env.REPO_NAME }}-deployment.yaml
+        run: sed -i 's|${{ secrets.KC_REGISTRY_URL }}/${{ secrets.IMAGE_NAME }}.*|${{ secrets.KC_REGISTRY_URL }}/${{ secrets.IMAGE_NAME }}:${{ github.event.release.tag_name }}|' ./backend/${{ env.DIRECTORY_NAME }}/${{ env.REPO_NAME }}-deployment.yaml
 
       - name: Commit and push changes
         run: |

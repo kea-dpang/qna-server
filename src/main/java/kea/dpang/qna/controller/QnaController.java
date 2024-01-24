@@ -1,65 +1,67 @@
 package kea.dpang.qna.controller;
 
 
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.websocket.server.PathParam;
+import kea.dpang.qna.dto.request.CreateQnaRequestDto;
 import kea.dpang.qna.dto.request.QnaAnswerRequest;
-import kea.dpang.qna.dto.request.QnaCreateRequestDto;
-import kea.dpang.qna.dto.request.QnaUpdateRequestDto;
-import kea.dpang.qna.dto.response.AllQnaGetResponseDto;
-import kea.dpang.qna.dto.response.QnaGetResponseDto;
-import kea.dpang.qna.service.QnaServiceImpl;
+import kea.dpang.qna.dto.request.UpdateQnaRequestDto;
+import kea.dpang.qna.dto.response.QnaDetailDto;
+import kea.dpang.qna.dto.response.QnaDto;
+import kea.dpang.qna.service.QnaService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
-@Tag(name = "QnA", description = "qna 서비스 api")
-@RequiredArgsConstructor
 @RestController
-@RequestMapping("/posts/qna")
+@RequiredArgsConstructor
+@RequestMapping("/api/qna")
 public class QnaController {
 
-    private final QnaServiceImpl qnaService;
+    private final QnaService qnaService;
 
-    @GetMapping("/gatewaytest")
-    public String gatewaytest(@RequestHeader("token") String token) {
-        return token;
+    // QnA 생성 API
+    @PostMapping
+    public ResponseEntity<Void> createQna(@RequestBody CreateQnaRequestDto createQnaRequest) {
+        qnaService.createQna(createQnaRequest);
+        return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/onetooneqna")
-    public void postQna(@RequestBody QnaCreateRequestDto request) {
-        qnaService.createQna(request);
-    }
-
-    @PatchMapping("/{postId}")
-    public void updateQna(@PathParam("postId") Long postId, @RequestBody QnaUpdateRequestDto request) {
-        qnaService.updateQna(postId, request);
-    }
-
-    @PatchMapping("/{postId}/answer")
-    public void updateAnswerQna(@PathParam("postId") Long postId, @RequestBody QnaAnswerRequest request) {
-        qnaService.updateAnswerQna(postId, request);
-    }
-
+    // QnA 목록 조회 API
     @GetMapping
-    public List<AllQnaGetResponseDto> getAllQna() {
-        return qnaService.getAllQna();
+    public ResponseEntity<Page<QnaDto>> getQnaList(@RequestParam Optional<Long> userId, Pageable pageable) {
+        Page<QnaDto> qnaDtoPage = qnaService.getQnaList(userId, pageable);
+        return ResponseEntity.ok(qnaDtoPage);
     }
 
-    @GetMapping("/{userId}/customerqna")
-    public List<AllQnaGetResponseDto> getUserQna(@PathParam("userId") Iterable<Long> userId) {
-        return qnaService.getUserQna(userId);
+    // QnA 조회 API
+    @GetMapping("/{id}")
+    public ResponseEntity<QnaDetailDto> getQna(@PathVariable Long id) {
+        QnaDetailDto qnaDetailDto = qnaService.getQna(id);
+        return ResponseEntity.ok(qnaDetailDto);
     }
 
-    @GetMapping("/{qnaId}")
-    public QnaGetResponseDto getQna(@PathParam("qnaId") Long qnaId) {
-        return qnaService.getQna(qnaId);
+    // QnA 답변 등록 API
+    @PutMapping("/{id}/answer")
+    public ResponseEntity<Void> answerQna(@PathVariable Long id, @RequestBody QnaAnswerRequest answerRequest) {
+        qnaService.updateAnswerQna(id, answerRequest);
+        return ResponseEntity.ok().build();
     }
 
+    // QnA 정보 업데이트 API
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> updateQna(@PathVariable Long id, @RequestBody UpdateQnaRequestDto updateQnaRequest) {
+        qnaService.updateQna(id, updateQnaRequest);
+        return ResponseEntity.ok().build();
+    }
+
+    // QnA 삭제 API
     @DeleteMapping
-    public void deleteQna(@RequestParam List<Long> ids) {
+    public ResponseEntity<Void> deleteQna(@RequestBody List<Long> ids) {
         qnaService.deleteQna(ids);
+        return ResponseEntity.ok().build();
     }
-
 }

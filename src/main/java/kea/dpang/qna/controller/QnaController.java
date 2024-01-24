@@ -1,55 +1,86 @@
 package kea.dpang.qna.controller;
 
 
-import jakarta.websocket.server.PathParam;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import kea.dpang.qna.base.BaseResponse;
+import kea.dpang.qna.base.SuccessResponse;
+import kea.dpang.qna.dto.request.CreateQnaRequestDto;
 import kea.dpang.qna.dto.request.QnaAnswerRequest;
-import kea.dpang.qna.dto.request.QnaCreateRequestDto;
-import kea.dpang.qna.dto.request.QnaUpdateRequestDto;
-import kea.dpang.qna.dto.response.AllQnaGetResponseDto;
-import kea.dpang.qna.dto.response.QnaGetResponseDto;
-import kea.dpang.qna.service.QnaServiceImpl;
+import kea.dpang.qna.dto.request.UpdateQnaRequestDto;
+import kea.dpang.qna.dto.response.QnaDetailDto;
+import kea.dpang.qna.dto.response.QnaDto;
+import kea.dpang.qna.service.QnaService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
-@RequiredArgsConstructor
 @RestController
-@RequestMapping("/posts")
+@RequiredArgsConstructor
+@RequestMapping("/api/qna")
 public class QnaController {
 
-    private final QnaServiceImpl qnaService;
+    private final QnaService qnaService;
 
-    @GetMapping("/gatewaytest")
-    public String gatewaytest(@RequestHeader("token") String token){ return token; }
-
-    @PostMapping("/onetooneqna")
-    public void postQna(@RequestBody QnaCreateRequestDto request){
-        qnaService.createQna(request);
+    @PostMapping
+    @Operation(summary = "QnA 생성", description = "QnA를 생성합니다.")
+    public ResponseEntity<BaseResponse> createQna(
+            @RequestBody @Parameter(description = "QnA 생성 정보") CreateQnaRequestDto createQnaRequest
+    ) {
+        qnaService.createQna(createQnaRequest);
+        return ResponseEntity.ok(new BaseResponse(200, "QnA 생성이 완료되었습니다."));
     }
-
-    @PatchMapping("/{postId}")
-    public void updateQna(@PathParam("postId") Long postId, @RequestBody QnaUpdateRequestDto request){ qnaService.updateQna(postId, request); }
-
-    @PatchMapping("/{postId}/answer")
-    public void updateAnswerQna(@PathParam("postId") Long postId, @RequestBody QnaAnswerRequest request){ qnaService.updateAnswerQna(postId, request); }
 
     @GetMapping
-    public List<AllQnaGetResponseDto> getAllQna(){
-        return qnaService.getAllQna();
+    @Operation(summary = "QnA 목록 조회", description = "userId가 있으면 해당 사용자의 QnA를, 없으면 모든 QnA를 페이지네이션하여 조회합니다.")
+    public ResponseEntity<SuccessResponse<Page<QnaDto>>> getQnaList(
+            @RequestParam @Parameter(description = "사용자 ID") Optional<Long> userId, Pageable pageable
+    ) {
+        Page<QnaDto> qnaDtoPage = qnaService.getQnaList(userId, pageable);
+        return ResponseEntity.ok(new SuccessResponse<>(200, "QnA 목록 조회가 완료되었습니다.", qnaDtoPage));
     }
 
-    @GetMapping("/{userId}/customerqna")
-    public List<AllQnaGetResponseDto> getUserQna(@PathParam("userId") Iterable<Long> userId ){ return qnaService.getUserQna(userId); }
+    @GetMapping("/{id}")
+    @Operation(summary = "QnA 조회", description = "ID에 해당하는 QnA를 조회합니다.")
+    public ResponseEntity<SuccessResponse<QnaDetailDto>> getQna(
+            @PathVariable @Parameter(description = "QnA ID") Long id
+    ) {
+        QnaDetailDto qnaDetailDto = qnaService.getQna(id);
+        return ResponseEntity.ok(new SuccessResponse<>(200, "QnA 조회가 완료되었습니다.", qnaDetailDto));
+    }
 
-    @GetMapping("/{qnaId}")
-    public QnaGetResponseDto getQna(@PathParam("qnaId") Long qnaId){
-        return qnaService.getQna(qnaId);
+    @PutMapping("/{id}/answer")
+    @Operation(summary = "QnA 답변 등록", description = "ID에 해당하는 QnA에 답변을 등록합니다.")
+    public ResponseEntity<BaseResponse> answerQna(
+            @PathVariable @Parameter(description = "QnA ID") Long id,
+            @RequestBody @Parameter(description = "답변 정보") QnaAnswerRequest answerRequest
+    ) {
+        qnaService.updateAnswerQna(id, answerRequest);
+        return ResponseEntity.ok(new BaseResponse(200, "QnA 답변 등록이 완료되었습니다."));
+    }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "QnA 정보 업데이트", description = "ID에 해당하는 QnA의 정보를 업데이트합니다.")
+    public ResponseEntity<BaseResponse> updateQna(
+            @PathVariable @Parameter(description = "QnA ID") Long id,
+            @RequestBody @Parameter(description = "업데이트 정보") UpdateQnaRequestDto updateQnaRequest
+    ) {
+        qnaService.updateQna(id, updateQnaRequest);
+        return ResponseEntity.ok(new BaseResponse(200, "QnA 정보 업데이트가 완료되었습니다."));
     }
 
     @DeleteMapping
-    public void deleteQna(@RequestParam List<Long> ids){
+    @Operation(summary = "QnA 삭제", description = "ID에 해당하는 QnA를 삭제합니다.")
+    public ResponseEntity<BaseResponse> deleteQna(
+            @RequestBody @Parameter(description = "삭제할 QnA ID 리스트") List<Long> ids
+    ) {
         qnaService.deleteQna(ids);
+        return ResponseEntity.ok(new BaseResponse(200, "QnA 삭제가 완료되었습니다."));
     }
-
 }
+

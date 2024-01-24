@@ -6,6 +6,6 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class QnaAnswerRequest {
-    private Long responder_id;
+    private Long responderId;
     private String answer;
 }

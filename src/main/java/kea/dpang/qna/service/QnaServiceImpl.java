@@ -1,110 +1,104 @@
 package kea.dpang.qna.service;
 
+import kea.dpang.qna.dto.request.CreateQnaRequestDto;
 import kea.dpang.qna.dto.request.QnaAnswerRequest;
-import kea.dpang.qna.dto.request.QnaCreateRequestDto;
-import kea.dpang.qna.dto.request.QnaUpdateRequestDto;
-import kea.dpang.qna.dto.response.AllQnaGetResponseDto;
-import kea.dpang.qna.dto.response.QnaGetResponseDto;
-import kea.dpang.qna.entity.QnaEntity;
+import kea.dpang.qna.dto.request.UpdateQnaRequestDto;
+import kea.dpang.qna.dto.response.QnaDetailDto;
+import kea.dpang.qna.dto.response.QnaDto;
+import kea.dpang.qna.entity.Qna;
+import kea.dpang.qna.entity.Status;
+import kea.dpang.qna.exception.QnaNotFoundException;
 import kea.dpang.qna.repository.QnaRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 @Service
-@RequiredArgsConstructor
 @Transactional
-public class QnaServiceImpl implements QnaService{
+@RequiredArgsConstructor
+public class QnaServiceImpl implements QnaService {
+
     private final QnaRepository qnaRepository;
+
     @Override
-    public void createQna(QnaCreateRequestDto request) {
-        QnaEntity qna = QnaEntity.builder()
-                .author_id(request.getUserID())
+    public void createQna(CreateQnaRequestDto request) {
+        // request의 정보를 이용해서 새로운 QnA 객체를 생성한다
+        Qna qna = Qna.builder()
                 .title(request.getTitle())
-                .category(request.getInquiryType1())
-                .question(request.getContents())
-                .is_public(request.getAgree())
-                .item_id(request.getItemId())
-                .attachment_url(request.getImage())
-                .state("1")
+                .category(request.getCategory())
+                .title(request.getTitle())
+                .itemId(request.getItemId())
+                .attachmentUrl(request.getImageUrl())
+                .status(Status.PROCESSING)
                 .build();
+
+        // 생성한 QnA 객체를 데이터베이스에 저장한다.
         qnaRepository.save(qna);
     }
 
     @Override
-    public void updateQna(Long qnaId, QnaUpdateRequestDto request) {
-        QnaEntity qna = qnaRepository.findById(qnaId).get();
-        qna.updateQnaEntity(
-                request.getItem_id(),
+    public void updateQna(Long id, UpdateQnaRequestDto request) {
+        // 데이터베이스에서 ID에 해당하는 Qna 객체를 가져온다.
+        Qna qna = qnaRepository.findById(id)
+                .orElseThrow(() -> new QnaNotFoundException(id));
+
+        //  가져온 Qna 객체의 정보를 request의 정보로 업데이트한다.
+        qna.update(
                 request.getTitle(),
                 request.getCategory(),
                 request.getQuestion(),
-                request.getAttachment_url(),
-                request.getIs_public()
-                );
-    }
-
-    @Override
-    public void deleteQna(List<Long> request) {
-        for (Long id:request) {
-            qnaRepository.deleteById(id);
-        }
-    }
-
-    @Override
-    public List<AllQnaGetResponseDto> getAllQna(){
-        List<QnaEntity> qnaList = qnaRepository.findAll();
-        return qnaReturn(qnaList);
-    }
-    @Override
-    public List<AllQnaGetResponseDto> getUserQna(Iterable<Long> request){
-        List<QnaEntity> qnaList = qnaRepository.findAllById(request);
-        return qnaReturn(qnaList);
-    }
-
-    private List<AllQnaGetResponseDto> qnaReturn(List<QnaEntity> qnaList) {
-        List<AllQnaGetResponseDto> qnaReturn = new ArrayList<>();
-        for (QnaEntity qna:qnaList){
-            AllQnaGetResponseDto qnaGet = AllQnaGetResponseDto.builder()
-                    .qna_id(qna.getId())
-                    .category(qna.getCategory())
-                    .title(qna.getTitle())
-                    .status(qna.getState())
-                    .created_at(qna.getCreated_at())
-                    .build();
-            qnaReturn.add(qnaGet);
-        }
-        return qnaReturn;
-    }
-
-    @Override
-    public QnaGetResponseDto getQna(Long request) {
-        QnaEntity qna = qnaRepository.findById(request).get();
-        return QnaGetResponseDto.builder()
-                .qna_id(qna.getId())
-                .author_id(qna.getAuthor_id())
-                .responder_id(qna.getResponder_id())
-                .item_id(qna.getItem_id())
-                .title(qna.getTitle())
-                .category(qna.getCategory())
-                .question(qna.getQuestion())
-                .attachment_url(qna.getAttachment_url())
-                .state(qna.getState())
-                .answer(qna.getAnswer())
-                .is_public(qna.getIs_public())
-                .created_at(qna.getCreated_at())
-                .updated_at(qna.getUpdated_at())
-                .build();
-    }
-
-    @Override
-    public void updateAnswerQna(Long qnaId, QnaAnswerRequest request){
-        QnaEntity qna = qnaRepository.findById(qnaId).get();
-        qna.updateAnswerQna(
-                request.getResponder_id(),
-                request.getAnswer()
+                request.getAttachmentUrl()
         );
     }
+
+    @Override
+    public void deleteQna(List<Long> ids) {
+        // 요청받은 ID 리스트를 순회하면서 각각의 QnA를 삭제한다.
+        for (Long id : ids) {
+
+            // 데이터베이스에서 ID에 해당하는 QnA를 조회한다.
+            Qna qna = qnaRepository.findById(id)
+                    .orElseThrow(() -> new QnaNotFoundException(id)); // 해당하는 QnA가 없으면 예외를 발생시킨다.
+
+            // 조회한 QnA를 데이터베이스에서 삭제한다.
+            qnaRepository.delete(qna);
+        }
+    }
+
+    @Override
+    public Page<QnaDto> getQnaList(Optional<Long> userId, Pageable pageable) {
+        // userId가 있으면 해당 사용자의 QnA를, 없으면 모든 QnA를 페이지네이션하여 조회한다.
+        Page<Qna> qnaPage = userId
+                .map(id -> qnaRepository.findByAuthorId(id, pageable)) // 사용자의 QnA 조회
+                .orElse(qnaRepository.findAll(pageable)); // 모든 QnA 조회
+
+        // 조회한 QnA를 Dto로 변환하고 반환한다.
+        return qnaPage.map(Qna::toQnaDto);
+    }
+
+    @Override
+    public QnaDetailDto getQna(Long id) {
+        // 데이터베이스에서 ID에 해당하는 QnA를 조회한다.
+        Qna qna = qnaRepository.findById(id)
+                .orElseThrow(() -> new QnaNotFoundException(id));  // 해당하는 QnA가 없으면 예외를 발생시킨다.
+
+        // 조회한 QnA를 QnaDetailDto로 변환 및 반환한다.
+        return qna.toQnaDetailDto();
+    }
+
+    @Override
+    public void updateAnswerQna(Long id, QnaAnswerRequest request) {
+        // 데이터베이스에서 ID에 해당하는 QnA를 조회한다.
+        Qna qna = qnaRepository.findById(id)
+                .orElseThrow(() -> new QnaNotFoundException(id));  // 해당하는 QnA가 없으면 예외를 발생시킨다.
+
+        // 조회한 QnA의 답변자 ID와 답변 내용을 업데이트한다.
+        qna.answer(request.getResponderId(), request.getAnswer());
+    }
+
 }

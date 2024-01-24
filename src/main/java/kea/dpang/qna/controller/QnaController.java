@@ -1,6 +1,7 @@
 package kea.dpang.qna.controller;
 
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.websocket.server.PathParam;
 import kea.dpang.qna.dto.request.QnaAnswerRequest;
 import kea.dpang.qna.dto.request.QnaCreateRequestDto;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name="QnA",description = "qna 서비스 api")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/posts")

@@ -32,7 +32,6 @@ public class QnaServiceImpl implements QnaService {
                 .title(request.getTitle())
                 .category(request.getCategory())
                 .title(request.getTitle())
-                .isPublic(request.getIsPublic())
                 .itemId(request.getItemId())
                 .attachmentUrl(request.getImageUrl())
                 .status(Status.PROCESSING)
@@ -53,8 +52,7 @@ public class QnaServiceImpl implements QnaService {
                 request.getTitle(),
                 request.getCategory(),
                 request.getQuestion(),
-                request.getAttachmentUrl(),
-                request.getIsPublic()
+                request.getAttachmentUrl()
         );
     }
 

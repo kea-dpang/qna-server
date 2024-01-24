@@ -12,5 +12,4 @@ public class UpdateQnaRequestDto {
     private Category category;
     private String question;
     private String attachmentUrl;
-    private Boolean isPublic;
 }

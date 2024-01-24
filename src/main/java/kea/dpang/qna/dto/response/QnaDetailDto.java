@@ -23,7 +23,6 @@ public class QnaDetailDto {
     private String attachmentUrl;  // QnA에 첨부된 파일의 URL
     private Status status;  // QnA의 상태
     private String answer;  // QnA의 답변 내용
-    private Boolean isPublic;  // QnA의 공개 여부
     private LocalDateTime createdAt;  // QnA가 생성된 시각
     private LocalDateTime updatedAt;  // QnA가 마지막으로 업데이트된 시각
 }

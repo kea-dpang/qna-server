@@ -51,9 +51,6 @@ public class Qna {
     @Column
     private String answer; // 문의 답변
 
-    @Column(name = "is_public")
-    private Boolean isPublic; // 공개 여부
-
     @CreationTimestamp
     @Column(name = "created_at")
     private LocalDateTime createdAt; // 생성 날짜
@@ -69,14 +66,12 @@ public class Qna {
      * @param category      카테고리
      * @param contents      내용
      * @param attachmentUrl 첨부파일 URL
-     * @param isPublic      공개 여부
      */
-    public void update(String title, Category category, String contents, String attachmentUrl, Boolean isPublic) {
+    public void update(String title, Category category, String contents, String attachmentUrl) {
         this.title = title;
         this.category = category;
         this.contents = contents;
         this.attachmentUrl = attachmentUrl;
-        this.isPublic = isPublic;
     }
 
     /**
@@ -123,7 +118,6 @@ public class Qna {
                 .attachmentUrl(this.attachmentUrl)
                 .status(this.status)
                 .answer(this.answer)
-                .isPublic(this.isPublic)
                 .createdAt(this.createdAt)
                 .updatedAt(this.updatedAt)
                 .build();

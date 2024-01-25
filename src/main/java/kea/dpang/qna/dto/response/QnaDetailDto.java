@@ -4,12 +4,14 @@ import kea.dpang.qna.entity.Category;
 import kea.dpang.qna.entity.Status;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 
 /**
  * QnA의 상세한 정보를 담는 DTO 클래스입니다.
  */
+@Data
 @Builder
 @AllArgsConstructor
 public class QnaDetailDto {

@@ -84,19 +84,4 @@ public class Qna {
         this.answer = answer;
         this.status = Status.COMPLETED;
     }
-
-    /**
-     * QnA를 QnaDto로 변환합니다.
-     *
-     * @return 변환된 QnaDto
-     */
-    public QnaDto toQnaDto() {
-        return QnaDto.builder()
-                .qnaId(this.id)
-                .category(this.category)
-                .title(this.title)
-                .status(this.status)
-                .createdAt(this.createdAt)
-                .build();
-    }
 }

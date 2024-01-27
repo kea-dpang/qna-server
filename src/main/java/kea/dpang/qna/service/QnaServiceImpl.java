@@ -78,7 +78,7 @@ public class QnaServiceImpl implements QnaService {
                 .orElse(qnaRepository.findAll(pageable)); // 모든 QnA 조회
 
         // 조회한 QnA를 Dto로 변환하고 반환한다.
-        return qnaPage.map(Qna::toQnaDto);
+        return qnaPage.map(QnaDto::new);
     }
 
     @Override

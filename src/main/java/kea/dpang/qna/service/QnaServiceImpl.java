@@ -88,7 +88,7 @@ public class QnaServiceImpl implements QnaService {
                 .orElseThrow(() -> new QnaNotFoundException(id));  // 해당하는 QnA가 없으면 예외를 발생시킨다.
 
         // 조회한 QnA를 QnaDetailDto로 변환 및 반환한다.
-        return qna.toQnaDetailDto();
+        return new QnaDetailDto(qna);
     }
 
     @Override

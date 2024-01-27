@@ -1,7 +1,6 @@
 package kea.dpang.qna.entity;
 
 import jakarta.persistence.*;
-import kea.dpang.qna.dto.response.QnaDetailDto;
 import kea.dpang.qna.dto.response.QnaDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -98,28 +97,6 @@ public class Qna {
                 .title(this.title)
                 .status(this.status)
                 .createdAt(this.createdAt)
-                .build();
-    }
-
-    /**
-     * QnA를 QnaDetailDto로 변환합니다.
-     *
-     * @return 변환된 QnaDetailDto
-     */
-    public QnaDetailDto toQnaDetailDto() {
-        return QnaDetailDto.builder()
-                .qnaId(this.id)
-                .authorId(this.authorId)
-                .responderId(this.responderId)
-                .itemId(this.itemId)
-                .title(this.title)
-                .category(this.category)
-                .contents(this.contents)
-                .attachmentUrl(this.attachmentUrl)
-                .status(this.status)
-                .answer(this.answer)
-                .createdAt(this.createdAt)
-                .updatedAt(this.updatedAt)
                 .build();
     }
 }

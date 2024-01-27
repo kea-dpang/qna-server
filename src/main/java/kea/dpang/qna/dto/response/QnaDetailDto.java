@@ -1,6 +1,7 @@
 package kea.dpang.qna.dto.response;
 
 import kea.dpang.qna.entity.Category;
+import kea.dpang.qna.entity.Qna;
 import kea.dpang.qna.entity.Status;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,4 +28,19 @@ public class QnaDetailDto {
     private String answer;  // QnA의 답변 내용
     private LocalDateTime createdAt;  // QnA가 생성된 시각
     private LocalDateTime updatedAt;  // QnA가 마지막으로 업데이트된 시각
+
+    public QnaDetailDto(Qna qna) {
+        this.qnaId = qna.getId();
+        this.authorId = qna.getAuthorId();
+        this.responderId = qna.getResponderId();
+        this.itemId = qna.getItemId();
+        this.title = qna.getTitle();
+        this.category = qna.getCategory();
+        this.contents = qna.getContents();
+        this.attachmentUrl = qna.getAttachmentUrl();
+        this.status = qna.getStatus();
+        this.answer = qna.getAnswer();
+        this.createdAt = qna.getCreatedAt();
+        this.updatedAt = qna.getUpdatedAt();
+    }
 }

@@ -1,8 +1,8 @@
 package kea.dpang.qna.entity;
 
 import jakarta.persistence.*;
-import kea.dpang.qna.dto.response.QnaDetailDto;
-import kea.dpang.qna.dto.response.QnaDto;
+import kea.dpang.qna.dto.request.CreateQnaRequestDto;
+import kea.dpang.qna.dto.request.UpdateQnaRequestDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -59,19 +59,24 @@ public class Qna {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt; // 변경 날짜
 
+    public Qna(CreateQnaRequestDto request) {
+        this.title = request.getTitle();
+        this.category = request.getCategory();
+        this.itemId = request.getItemId();
+        this.attachmentUrl = request.getImageUrl();
+        this.status = Status.PROCESSING;
+    }
+
     /**
      * QnA의 정보를 업데이트합니다.
      *
-     * @param title         제목
-     * @param category      카테고리
-     * @param contents      내용
-     * @param attachmentUrl 첨부파일 URL
+     * @param request 업데이트할 정보를 담은 DTO
      */
-    public void update(String title, Category category, String contents, String attachmentUrl) {
-        this.title = title;
-        this.category = category;
-        this.contents = contents;
-        this.attachmentUrl = attachmentUrl;
+    public void update(UpdateQnaRequestDto request) {
+        this.title = request.getTitle();
+        this.category = request.getCategory();
+        this.contents = request.getQuestion();
+        this.attachmentUrl = request.getAttachmentUrl();
     }
 
     /**
@@ -84,42 +89,5 @@ public class Qna {
         this.responderId = responderId;
         this.answer = answer;
         this.status = Status.COMPLETED;
-    }
-
-    /**
-     * QnA를 QnaDto로 변환합니다.
-     *
-     * @return 변환된 QnaDto
-     */
-    public QnaDto toQnaDto() {
-        return QnaDto.builder()
-                .qnaId(this.id)
-                .category(this.category)
-                .title(this.title)
-                .status(this.status)
-                .createdAt(this.createdAt)
-                .build();
-    }
-
-    /**
-     * QnA를 QnaDetailDto로 변환합니다.
-     *
-     * @return 변환된 QnaDetailDto
-     */
-    public QnaDetailDto toQnaDetailDto() {
-        return QnaDetailDto.builder()
-                .qnaId(this.id)
-                .authorId(this.authorId)
-                .responderId(this.responderId)
-                .itemId(this.itemId)
-                .title(this.title)
-                .category(this.category)
-                .contents(this.contents)
-                .attachmentUrl(this.attachmentUrl)
-                .status(this.status)
-                .answer(this.answer)
-                .createdAt(this.createdAt)
-                .updatedAt(this.updatedAt)
-                .build();
     }
 }

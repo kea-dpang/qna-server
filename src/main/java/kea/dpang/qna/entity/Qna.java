@@ -1,6 +1,7 @@
 package kea.dpang.qna.entity;
 
 import jakarta.persistence.*;
+import kea.dpang.qna.dto.request.CreateQnaRequestDto;
 import kea.dpang.qna.dto.request.UpdateQnaRequestDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -57,6 +58,14 @@ public class Qna {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt; // 변경 날짜
+
+    public Qna(CreateQnaRequestDto request) {
+        this.title = request.getTitle();
+        this.category = request.getCategory();
+        this.itemId = request.getItemId();
+        this.attachmentUrl = request.getImageUrl();
+        this.status = Status.PROCESSING;
+    }
 
     /**
      * QnA의 정보를 업데이트합니다.

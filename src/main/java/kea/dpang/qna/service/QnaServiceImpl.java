@@ -6,7 +6,6 @@ import kea.dpang.qna.dto.request.UpdateQnaRequestDto;
 import kea.dpang.qna.dto.response.QnaDetailDto;
 import kea.dpang.qna.dto.response.QnaDto;
 import kea.dpang.qna.entity.Qna;
-import kea.dpang.qna.entity.Status;
 import kea.dpang.qna.exception.QnaNotFoundException;
 import kea.dpang.qna.repository.QnaRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,14 +27,7 @@ public class QnaServiceImpl implements QnaService {
     @Override
     public void createQna(CreateQnaRequestDto request) {
         // request의 정보를 이용해서 새로운 QnA 객체를 생성한다
-        Qna qna = Qna.builder()
-                .title(request.getTitle())
-                .category(request.getCategory())
-                .title(request.getTitle())
-                .itemId(request.getItemId())
-                .attachmentUrl(request.getImageUrl())
-                .status(Status.PROCESSING)
-                .build();
+        Qna qna = new Qna(request);
 
         // 생성한 QnA 객체를 데이터베이스에 저장한다.
         qnaRepository.save(qna);

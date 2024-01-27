@@ -48,12 +48,7 @@ public class QnaServiceImpl implements QnaService {
                 .orElseThrow(() -> new QnaNotFoundException(id));
 
         //  가져온 Qna 객체의 정보를 request의 정보로 업데이트한다.
-        qna.update(
-                request.getTitle(),
-                request.getCategory(),
-                request.getQuestion(),
-                request.getAttachmentUrl()
-        );
+        qna.update(request);
     }
 
     @Override

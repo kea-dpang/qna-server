@@ -1,7 +1,7 @@
 package kea.dpang.qna.entity;
 
 import jakarta.persistence.*;
-import kea.dpang.qna.dto.response.QnaDto;
+import kea.dpang.qna.dto.request.UpdateQnaRequestDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -61,16 +61,13 @@ public class Qna {
     /**
      * QnA의 정보를 업데이트합니다.
      *
-     * @param title         제목
-     * @param category      카테고리
-     * @param contents      내용
-     * @param attachmentUrl 첨부파일 URL
+     * @param request 업데이트할 정보를 담은 DTO
      */
-    public void update(String title, Category category, String contents, String attachmentUrl) {
-        this.title = title;
-        this.category = category;
-        this.contents = contents;
-        this.attachmentUrl = attachmentUrl;
+    public void update(UpdateQnaRequestDto request) {
+        this.title = request.getTitle();
+        this.category = request.getCategory();
+        this.contents = request.getQuestion();
+        this.attachmentUrl = request.getAttachmentUrl();
     }
 
     /**

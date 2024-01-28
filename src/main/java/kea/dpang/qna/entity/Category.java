@@ -18,6 +18,7 @@ public enum Category {
      * @return 변환된 카테고리 enum
      */
     public static Category fromString(String value) {
+
         return Category.valueOf(value.toUpperCase());
     }
 }

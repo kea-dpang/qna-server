@@ -10,6 +10,8 @@ import kea.dpang.qna.dto.request.QnaAnswerRequest;
 import kea.dpang.qna.dto.request.UpdateQnaRequestDto;
 import kea.dpang.qna.dto.response.QnaDetailDto;
 import kea.dpang.qna.dto.response.QnaDto;
+import kea.dpang.qna.entity.Category;
+import kea.dpang.qna.entity.Status;
 import kea.dpang.qna.service.QnaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -39,9 +41,12 @@ public class QnaController {
     @GetMapping
     @Operation(summary = "QnA 목록 조회", description = "userId가 있으면 해당 사용자의 QnA를, 없으면 모든 QnA를 페이지네이션하여 조회합니다.")
     public ResponseEntity<SuccessResponse<Page<QnaDto>>> getQnaList(
-            @RequestParam @Parameter(description = "사용자 ID") Optional<Long> userId, Pageable pageable
+            @RequestParam @Parameter(description = "사용자 ID") Optional<Long> userId,
+            @RequestParam @Parameter(description = "카테고리") Optional<Category> category,
+            @RequestParam @Parameter(description = "상태") Optional<Status> status,
+            Pageable pageable
     ) {
-        Page<QnaDto> qnaDtoPage = qnaService.getQnaList(userId, pageable);
+        Page<QnaDto> qnaDtoPage = qnaService.getQnaList(userId, category, status, pageable);
         return ResponseEntity.ok(new SuccessResponse<>(200, "QnA 목록 조회가 완료되었습니다.", qnaDtoPage));
     }
 
@@ -83,4 +88,3 @@ public class QnaController {
         return ResponseEntity.ok(new BaseResponse(200, "QnA 삭제가 완료되었습니다."));
     }
 }
-

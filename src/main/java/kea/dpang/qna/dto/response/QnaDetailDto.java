@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 public class QnaDetailDto {
     private Long qnaId;  // QnA의 ID
     private Long authorId;  // QnA를 작성한 사용자의 ID
+    private UserDto user; // 사용자 정보
     private Long responderId;  // QnA에 답변한 관리자의 ID
     private Long itemId;  // QnA와 관련된 아이템의 ID
     private String title;  // QnA의 제목

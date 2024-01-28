@@ -1,6 +1,7 @@
 package kea.dpang.qna.dto.response;
 
 import kea.dpang.qna.entity.Category;
+import kea.dpang.qna.entity.Qna;
 import kea.dpang.qna.entity.Status;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,4 +21,12 @@ public class QnaDto {
     private String title;  // QnA의 제목
     private Status status;  // QnA의 상태
     private LocalDateTime createdAt;  // QnA가 생성된 시각
+
+    public QnaDto(Qna qna) {
+        this.qnaId = qna.getId();
+        this.category = qna.getCategory();
+        this.title = qna.getTitle();
+        this.status = qna.getStatus();
+        this.createdAt = qna.getCreatedAt();
+    }
 }

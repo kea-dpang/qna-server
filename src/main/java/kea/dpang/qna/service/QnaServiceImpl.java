@@ -1,20 +1,32 @@
 package kea.dpang.qna.service;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+import kea.dpang.qna.base.SuccessResponse;
+import kea.dpang.qna.client.UserServiceClient;
 import kea.dpang.qna.dto.request.CreateQnaRequestDto;
 import kea.dpang.qna.dto.request.QnaAnswerRequest;
 import kea.dpang.qna.dto.request.UpdateQnaRequestDto;
 import kea.dpang.qna.dto.response.QnaDetailDto;
 import kea.dpang.qna.dto.response.QnaDto;
+import kea.dpang.qna.dto.response.UserDto;
+import kea.dpang.qna.entity.Category;
 import kea.dpang.qna.entity.Qna;
 import kea.dpang.qna.entity.Status;
 import kea.dpang.qna.exception.QnaNotFoundException;
+import kea.dpang.qna.exception.UserNotFoundException;
 import kea.dpang.qna.repository.QnaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +36,8 @@ import java.util.Optional;
 public class QnaServiceImpl implements QnaService {
 
     private final QnaRepository qnaRepository;
+
+    private final UserServiceClient userServiceClient;
 
     @Override
     public void createQna(CreateQnaRequestDto request) {
@@ -49,23 +63,28 @@ public class QnaServiceImpl implements QnaService {
     }
 
     @Override
-    public Page<QnaDto> getQnaList(Optional<Long> userId, Pageable pageable) {
-        // userId가 있으면 해당 사용자의 QnA를, 없으면 모든 QnA를 페이지네이션하여 조회한다.
-        Page<Qna> qnaPage = userId
-                .map(id -> qnaRepository.findAllByAuthorId(id, pageable)) // 사용자의 QnaDto 조회
-                .orElse(qnaRepository.findAll(pageable)); // 모든 QnaDto 조회
-
-        // 조회한 QnA를 Dto로 변환하고 반환한다.
-        return qnaPage.map(Qna::toQnaDto);
+    public Page<QnaDto> getQnaList(Optional<Long> userId, Optional<Category> category, Optional<Status> status, Pageable pageable) {
+        // userId, category, status의 값이 없을 경우 null로 처리한다.
+        return qnaRepository.findAllByUserIdAndCategoryAndStatus(userId.orElse(null), category.orElse(null),status.orElse(null), pageable)
+                .map(Qna::toQnaDto);
     }
 
     @Override
     public QnaDetailDto getQna(Long id) {
         // 데이터베이스에서 ID에 해당하는 QnA를 조회한다.
         // 조회한 QnA를 QnaDetailDto로 변환 및 반환한다.
-        return qnaRepository.findById(id)
-                .orElseThrow(() -> new QnaNotFoundException(id)) // 해당하는 QnA가 없으면 예외를 발생시킨다.
-                .toQnaDetailDto();
+        Qna qna = qnaRepository.findById(id)
+                .orElseThrow(() -> new QnaNotFoundException(id));
+
+        UserDto user;
+        try {
+            ResponseEntity<SuccessResponse<UserDto>> responseEntity = userServiceClient.getUser(id);
+            user = responseEntity.getBody().getData();
+        } catch (Exception e) {
+            throw new UserNotFoundException("사용자 정보를 가져오는 중에 오류가 발생했습니다: ", e);
+        }
+
+        return qna.toQnaDetailDto(user);
     }
 
     @Override

@@ -5,6 +5,8 @@ import kea.dpang.qna.dto.request.QnaAnswerRequest;
 import kea.dpang.qna.dto.request.UpdateQnaRequestDto;
 import kea.dpang.qna.dto.response.QnaDetailDto;
 import kea.dpang.qna.dto.response.QnaDto;
+import kea.dpang.qna.entity.Category;
+import kea.dpang.qna.entity.Status;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -42,7 +44,7 @@ public interface QnaService {
      * @param pageable 페이지네이션 정보
      * @return 페이지네이션된 QnaDto 정보
      */
-    Page<QnaDto> getQnaList(Optional<Long> userId, Pageable pageable);
+    Page<QnaDto> getQnaList(Optional<Long> userId, Optional<Category> category, Optional<Status> status, Pageable pageable);
 
     /**
      * 특정 QnA를 조회합니다.

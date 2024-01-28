@@ -5,6 +5,7 @@ import kea.dpang.qna.dto.request.QnaAnswerRequest;
 import kea.dpang.qna.dto.request.UpdateQnaRequestDto;
 import kea.dpang.qna.dto.response.QnaDetailDto;
 import kea.dpang.qna.dto.response.QnaDto;
+import kea.dpang.qna.dto.response.UserDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -39,18 +40,20 @@ public class Qna {
     private String title; // 문의 제목
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "category")
     private Category category; // 문의 카테고리
 
-    @Column
+    @Column(name = "content")
     private String contents; // 문의 내용
 
     @Column(name = "attachment_url")
     private String attachmentUrl; // 첨부 사진 링크
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "status")
     private Status status; // 문의 상태
 
-    @Column
+    @Column(name = "answer")
     private String answer; // 문의 답변
 
     @CreationTimestamp
@@ -105,10 +108,11 @@ public class Qna {
      *
      * @return 변환된 QnaDetailDto
      */
-    public QnaDetailDto toQnaDetailDto() {
+    public QnaDetailDto toQnaDetailDto(UserDto userDto) {
         return QnaDetailDto.builder()
                 .qnaId(this.id)
                 .authorId(this.authorId)
+                .user(userDto)
                 .responderId(this.responderId)
                 .itemId(this.itemId)
                 .title(this.title)

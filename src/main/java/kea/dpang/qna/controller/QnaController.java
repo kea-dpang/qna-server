@@ -83,4 +83,3 @@ public class QnaController {
         return ResponseEntity.ok(new BaseResponse(200, "QnA 삭제가 완료되었습니다."));
     }
 }
-

@@ -15,5 +15,5 @@ public interface QnaRepository extends JpaRepository<Qna, Long> {
      * @param pageable 페이지네이션 정보
      * @return 페이지네이션된 QnA 정보
      */
-    Page<Qna> findByAuthorId(Long authorId, Pageable pageable);
+    Page<Qna> findAllByAuthorId(Long authorId, Pageable pageable);
 }

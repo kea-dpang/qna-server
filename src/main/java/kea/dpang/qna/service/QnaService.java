@@ -16,15 +16,15 @@ public interface QnaService {
     /**
      * QnA를 생성합니다.
      *
-     * @param request QnA 생성 요청 정보
+     * @param request QnaDto 생성 요청 정보
      */
     void createQna(CreateQnaRequestDto request);
 
     /**
      * QnA를 업데이트합니다.
      *
-     * @param id   업데이트할 QnA의 ID
-     * @param request QnA 업데이트 요청 정보
+     * @param id      업데이트할 QnA의 ID
+     * @param request QnaDto 업데이트 요청 정보
      */
     void updateQna(Long id, UpdateQnaRequestDto request);
 
@@ -40,7 +40,7 @@ public interface QnaService {
      *
      * @param userId   조회할 사용자의 ID
      * @param pageable 페이지네이션 정보
-     * @return 페이지네이션된 QnA 정보
+     * @return 페이지네이션된 QnaDto 정보
      */
     Page<QnaDto> getQnaList(Optional<Long> userId, Pageable pageable);
 
@@ -48,15 +48,15 @@ public interface QnaService {
      * 특정 QnA를 조회합니다.
      *
      * @param id 조회할 QnA의 ID
-     * @return QnA 정보
+     * @return QnaDto 정보
      */
     QnaDetailDto getQna(Long id);
 
     /**
      * QnA의 답변을 업데이트합니다.
      *
-     * @param id   업데이트할 QnA의 ID
-     * @param request QnA 답변 업데이트 요청 정보
+     * @param id      업데이트할 QnA의 ID
+     * @param request QnaDto 답변 업데이트 요청 정보
      */
     void updateAnswerQna(Long id, QnaAnswerRequest request);
 }

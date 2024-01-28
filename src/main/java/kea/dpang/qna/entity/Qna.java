@@ -1,6 +1,8 @@
 package kea.dpang.qna.entity;
 
 import jakarta.persistence.*;
+import kea.dpang.qna.dto.request.QnaAnswerRequest;
+import kea.dpang.qna.dto.request.UpdateQnaRequestDto;
 import kea.dpang.qna.dto.response.QnaDetailDto;
 import kea.dpang.qna.dto.response.QnaDto;
 import lombok.AllArgsConstructor;
@@ -62,16 +64,13 @@ public class Qna {
     /**
      * QnA의 정보를 업데이트합니다.
      *
-     * @param title         제목
-     * @param category      카테고리
-     * @param contents      내용
-     * @param attachmentUrl 첨부파일 URL
+     * @param dto           업데이트할 내용을 가진 DTO
      */
-    public void update(String title, Category category, String contents, String attachmentUrl) {
-        this.title = title;
-        this.category = category;
-        this.contents = contents;
-        this.attachmentUrl = attachmentUrl;
+    public void update(UpdateQnaRequestDto dto) {
+        this.title = dto.getTitle();
+        this.category = dto.getCategory();
+        this.contents = dto.getQuestion();
+        this.attachmentUrl = dto.getAttachmentUrl();
     }
 
     /**
@@ -80,7 +79,7 @@ public class Qna {
      * @param responderId 답변을 작성한 관리자의 ID
      * @param answer      답변 내용
      */
-    public void answer(Long responderId, String answer) {
+    public void updateAnswer(Long responderId, String answer) {
         this.responderId = responderId;
         this.answer = answer;
         this.status = Status.COMPLETED;

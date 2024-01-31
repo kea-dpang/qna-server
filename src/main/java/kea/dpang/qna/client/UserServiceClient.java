@@ -9,9 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-@FeignClient(name = "user-service")
+@FeignClient(name = "user-server")
 public interface UserServiceClient {
-    @GetMapping("/find/{id}")
+    @GetMapping("/api/users/qna-find/{id}")
     ResponseEntity<SuccessResponse<UserDto>> getUser(
             @PathVariable @Parameter(description = "정보를 요청할 유저 ID") Long id
     );

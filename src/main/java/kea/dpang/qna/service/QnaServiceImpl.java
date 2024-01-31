@@ -88,12 +88,12 @@ public class QnaServiceImpl implements QnaService {
                 .orElseThrow(() -> new QnaNotFoundException(id));
 
         UserDto user;
-        try {
+//        try {
             ResponseEntity<SuccessResponse<UserDto>> responseEntity = userServiceClient.getUser(id);
             user = responseEntity.getBody().getData();
-        } catch (Exception e) {
-            throw new UserNotFoundException("사용자 정보를 가져오는 중에 오류가 발생했습니다: ", e);
-        }
+//        } catch (Exception e) {
+//            throw new UserNotFoundException("사용자 정보를 가져오는 중에 오류가 발생했습니다: ", e);
+//        }
 
         return qna.toQnaDetailDto(user);
     }

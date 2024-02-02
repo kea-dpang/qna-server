@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import kea.dpang.qna.base.BaseResponse;
 import kea.dpang.qna.base.SuccessResponse;
+import kea.dpang.qna.dto.DeleteQna;
 import kea.dpang.qna.dto.request.CreateQnaRequestDto;
 import kea.dpang.qna.dto.request.QnaAnswerRequest;
 import kea.dpang.qna.dto.request.UpdateQnaRequestDto;
@@ -82,9 +83,9 @@ public class QnaController {
     @DeleteMapping
     @Operation(summary = "QnA 삭제", description = "ID에 해당하는 QnA를 삭제합니다.")
     public ResponseEntity<BaseResponse> deleteQna(
-            @RequestBody @Parameter(description = "삭제할 QnA ID 리스트") List<Long> ids
-    ) {
-        qnaService.deleteQna(ids);
+            @RequestBody @Parameter(description = "삭제할 QnA ID 리스트") DeleteQna deleteQna
+            ) {
+        qnaService.deleteQna(deleteQna.getDeleteIds());
         return ResponseEntity.ok(new BaseResponse(200, "QnA 삭제가 완료되었습니다."));
     }
 }

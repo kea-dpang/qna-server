@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @FeignClient(name = "user-server")
 public interface UserServiceClient {
-    @GetMapping("/api/users/qna-find/{id}")
+    @GetMapping("/api/users/{userId}")
     ResponseEntity<SuccessResponse<UserDto>> getUser(
-            @PathVariable @Parameter(description = "정보를 요청할 유저 ID") Long id
+            @PathVariable @Parameter(description = "정보를 요청할 유저 ID") Long userId
     );
 }

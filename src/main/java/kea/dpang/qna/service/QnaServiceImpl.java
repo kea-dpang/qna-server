@@ -67,11 +67,11 @@ public class QnaServiceImpl implements QnaService {
     }
 
     @Override
-    public Page<QnaDto> getQnaList(Optional<Long> userId, Optional<Category> category, Optional<Status> status, Pageable pageable) {
+    public Page<QnaDto> getQnaList(Optional<Long> userId, Optional<Category> category, Optional<Status> status, Optional<Long> itemId, Pageable pageable) {
         log.info("사용자 ID: {}에 해당하는 QnA 목록을 조회합니다", userId.orElse(null));
 
         // userId, category, status의 값이 없을 경우 null로 처리한다.
-        return qnaRepository.findAllByUserIdAndCategoryAndStatus(userId.orElse(null), category.orElse(null),status.orElse(null), pageable)
+        return qnaRepository.findAllByUserIdAndCategoryAndStatus(userId.orElse(null), category.orElse(null),itemId.orElse(null), status.orElse(null), pageable)
                 .map(Qna::toQnaDto);
     }
 

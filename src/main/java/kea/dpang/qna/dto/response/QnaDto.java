@@ -21,6 +21,7 @@ public class QnaDto {
     private String title;  // QnA의 제목
     private Status status;  // QnA의 상태
     private LocalDateTime createdAt;  // QnA가 생성된 시각
+    private UserDto user; // QnA 작성자
 
     public QnaDto(Qna qna) {
         this.qnaId = qna.getId();

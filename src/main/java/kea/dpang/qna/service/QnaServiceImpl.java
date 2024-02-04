@@ -72,7 +72,7 @@ public class QnaServiceImpl implements QnaService {
 
         // userId, category, status의 값이 없을 경우 null로 처리한다.
         return qnaRepository.findAllByUserIdAndCategoryAndStatus(userId.orElse(null), category.orElse(null),itemId.orElse(null), status.orElse(null), pageable)
-                .map(Qna::toQnaDto);
+                .map(qna -> qna.toQnaDto(userServiceClient.getUser(qna.getAuthorId()).getBody().getData()));
     }
 
     @Override

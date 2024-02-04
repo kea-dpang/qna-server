@@ -33,10 +33,12 @@ public interface QnaRepository extends JpaRepository<Qna, Long>, JpaSpecificatio
             "WHERE 1 = 1 " +
             "  AND (q.authorId = :userId OR :userId IS NULL) " +
             "  AND (q.category = :category OR :category IS NULL) " +
+            "  AND (q.itemId = :itemId OR :itemId IS NULL)" +
             "  AND (q.status = :status OR :status IS NULL) ")
     Page<Qna> findAllByUserIdAndCategoryAndStatus(
             @Param("userId") Long userId,
             @Param("category") Category category,
+            @Param("itemId") Long itemId,
             @Param("status") Status status,
             Pageable pageable
     );

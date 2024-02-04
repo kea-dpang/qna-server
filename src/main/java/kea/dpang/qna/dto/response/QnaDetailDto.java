@@ -21,6 +21,7 @@ public class QnaDetailDto {
     private UserDto user; // 사용자 정보
     private Long responderId;  // QnA에 답변한 관리자의 ID
     private Long itemId;  // QnA와 관련된 아이템의 ID
+    private String itemName; //QnA와 관련된 아이템의 이름
     private String title;  // QnA의 제목
     private Category category;  // QnA의 카테고리
     private String contents;  // QnA의 질문 내용

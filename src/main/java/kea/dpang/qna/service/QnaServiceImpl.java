@@ -1,10 +1,8 @@
 package kea.dpang.qna.service;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import kea.dpang.qna.base.SuccessResponse;
+import kea.dpang.qna.client.ItemServiceClient;
 import kea.dpang.qna.client.UserServiceClient;
 import kea.dpang.qna.dto.request.CreateQnaRequestDto;
 import kea.dpang.qna.dto.request.QnaAnswerRequest;
@@ -16,18 +14,16 @@ import kea.dpang.qna.entity.Category;
 import kea.dpang.qna.entity.Qna;
 import kea.dpang.qna.entity.Status;
 import kea.dpang.qna.exception.QnaNotFoundException;
-import kea.dpang.qna.exception.UserNotFoundException;
+import kea.dpang.qna.exception.FeignException;
 import kea.dpang.qna.repository.QnaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,6 +36,7 @@ public class QnaServiceImpl implements QnaService {
     private final QnaRepository qnaRepository;
 
     private final UserServiceClient userServiceClient;
+    private final ItemServiceClient itemServiceClient;
 
     @Override
     public void createQna(CreateQnaRequestDto request) {
@@ -70,11 +67,11 @@ public class QnaServiceImpl implements QnaService {
     }
 
     @Override
-    public Page<QnaDto> getQnaList(Optional<Long> userId, Optional<Category> category, Optional<Status> status, Pageable pageable) {
+    public Page<QnaDto> getQnaList(Optional<Long> userId, Optional<Category> category, Optional<Status> status, Optional<Long> itemId, Pageable pageable) {
         log.info("사용자 ID: {}에 해당하는 QnA 목록을 조회합니다", userId.orElse(null));
 
         // userId, category, status의 값이 없을 경우 null로 처리한다.
-        return qnaRepository.findAllByUserIdAndCategoryAndStatus(userId.orElse(null), category.orElse(null),status.orElse(null), pageable)
+        return qnaRepository.findAllByUserIdAndCategoryAndStatus(userId.orElse(null), category.orElse(null),itemId.orElse(null), status.orElse(null), pageable)
                 .map(Qna::toQnaDto);
     }
 
@@ -92,10 +89,18 @@ public class QnaServiceImpl implements QnaService {
             ResponseEntity<SuccessResponse<UserDto>> responseEntity = userServiceClient.getUser(qna.getAuthorId());
             user = responseEntity.getBody().getData();
         } catch (Exception e) {
-            throw new UserNotFoundException("사용자 정보를 가져오는 중에 오류가 발생했습니다: ", e);
+            throw new FeignException("사용자 정보를 가져오는 중에 오류가 발생했습니다: ", e);
         }
 
-        return qna.toQnaDetailDto(user);
+        String itemName;
+        try{
+            ResponseEntity<SuccessResponse<String>> responseEntity = itemServiceClient.getItemName(qna.getItemId());
+            itemName = responseEntity.getBody().getData();
+        } catch (Exception e){
+            throw new FeignException("상품 정보를 가져오는 중에 오류가 발생했습니다: ", e);
+        }
+
+        return qna.toQnaDetailDto(user,itemName);
     }
 
     @Override

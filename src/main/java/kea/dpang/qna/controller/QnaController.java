@@ -40,14 +40,15 @@ public class QnaController {
     }
 
     @GetMapping
-    @Operation(summary = "QnA 목록 조회", description = "userId가 있으면 해당 사용자의 QnA를, 없으면 모든 QnA를 페이지네이션하여 조회합니다.")
+    @Operation(summary = "QnA 목록 조회", description = "userId가 있으면 해당 사용자의 QnA를, 없으면 모든 QnA를 페이지네이션하여 조회합니다. 카테고리가 ITEM_INQUIRY이고 상품 ID가 있다면 해당 상품의 상품 문의 목록을 조회합니다.")
     public ResponseEntity<SuccessResponse<Page<QnaDto>>> getQnaList(
             @RequestParam @Parameter(description = "사용자 ID") Optional<Long> userId,
             @RequestParam @Parameter(description = "카테고리") Optional<Category> category,
+            @RequestParam @Parameter(description = "상품 ID") Optional<Long> itemId,
             @RequestParam @Parameter(description = "상태") Optional<Status> status,
             Pageable pageable
     ) {
-        Page<QnaDto> qnaDtoPage = qnaService.getQnaList(userId, category, status, pageable);
+        Page<QnaDto> qnaDtoPage = qnaService.getQnaList(userId, category, status,itemId, pageable);
         return ResponseEntity.ok(new SuccessResponse<>(200, "QnA 목록 조회가 완료되었습니다.", qnaDtoPage));
     }
 

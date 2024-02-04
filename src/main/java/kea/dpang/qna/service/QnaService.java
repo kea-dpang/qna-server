@@ -10,6 +10,7 @@ import kea.dpang.qna.entity.Status;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,11 +41,13 @@ public interface QnaService {
     /**
      * QnA를 페이지네이션하여 조회합니다. userId가 있으면 해당 사용자의 QnA를, 없으면 모든 QnA를 조회합니다.
      *
-     * @param userId   조회할 사용자의 ID
-     * @param pageable 페이지네이션 정보
+     * @param userId    조회할 사용자의 ID
+     * @param startDate
+     * @param endDate
+     * @param pageable  페이지네이션 정보
      * @return 페이지네이션된 QnaDto 정보
      */
-    Page<QnaDto> getQnaList(Optional<Long> userId, Optional<Category> category, Optional<Status> status, Optional<Long> itemId, Pageable pageable);
+    Page<QnaDto> getQnaList(Optional<Long> userId, Optional<Category> category, Optional<Status> status, Optional<Long> itemId, LocalDate startDate, LocalDate endDate, Pageable pageable);
 
     /**
      * 특정 QnA를 조회합니다.

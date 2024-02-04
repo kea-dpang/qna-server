@@ -24,6 +24,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -67,11 +68,18 @@ public class QnaServiceImpl implements QnaService {
     }
 
     @Override
-    public Page<QnaDto> getQnaList(Optional<Long> userId, Optional<Category> category, Optional<Status> status, Optional<Long> itemId, Pageable pageable) {
+    public Page<QnaDto> getQnaList(Optional<Long> userId, Optional<Category> category, Optional<Status> status, Optional<Long> itemId, LocalDate startDate, LocalDate endDate, Pageable pageable) {
         log.info("사용자 ID: {}에 해당하는 QnA 목록을 조회합니다", userId.orElse(null));
 
         // userId, category, status의 값이 없을 경우 null로 처리한다.
-        return qnaRepository.findAllByUserIdAndCategoryAndStatus(userId.orElse(null), category.orElse(null),itemId.orElse(null), status.orElse(null), pageable)
+        return qnaRepository.findAllByUserIdAndCategoryAndStatus(
+                        userId.orElse(null),
+                        category.orElse(null),
+                        itemId.orElse(null),
+                        status.orElse(null),
+                        startDate,
+                        endDate,
+                        pageable)
                 .map(qna -> qna.toQnaDto(userServiceClient.getUser(qna.getAuthorId()).getBody().getData()));
     }
 
@@ -92,12 +100,14 @@ public class QnaServiceImpl implements QnaService {
             throw new FeignException("사용자 정보를 가져오는 중에 오류가 발생했습니다: ", e);
         }
 
-        String itemName;
-        try{
-            ResponseEntity<SuccessResponse<String>> responseEntity = itemServiceClient.getItemName(qna.getItemId());
-            itemName = responseEntity.getBody().getData();
-        } catch (Exception e){
-            throw new FeignException("상품 정보를 가져오는 중에 오류가 발생했습니다: ", e);
+        String itemName = null;
+        if(qna.getItemId()!=null) {
+            try {
+                ResponseEntity<SuccessResponse<String>> responseEntity = itemServiceClient.getItemName(qna.getItemId());
+                itemName = responseEntity.getBody().getData();
+            } catch (Exception e) {
+                throw new FeignException("상품 정보를 가져오는 중에 오류가 발생했습니다: ", e);
+            }
         }
 
         return qna.toQnaDetailDto(user,itemName);

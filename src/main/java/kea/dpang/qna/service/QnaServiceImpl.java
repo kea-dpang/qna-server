@@ -73,8 +73,8 @@ public class QnaServiceImpl implements QnaService {
 
         LocalDateTime startDate = null;
         LocalDateTime endDate = null;
-        if(startDateString.isPresent()) startDate = LocalDate.parse(startDateString.get()).atStartOfDay();
-        if(endDateString.isPresent()) endDate = LocalDate.parse(endDateString.get()).atStartOfDay();
+        if(startDateString.isPresent()) startDate = LocalDate.parse(startDateString.get()).atStartOfDay().minusDays(1);
+        if(endDateString.isPresent()) endDate = LocalDate.parse(endDateString.get()).atStartOfDay().plusDays(1);
 
         // userId, category, status의 값이 없을 경우 null로 처리한다.
         return qnaRepository.findAllByUserIdAndCategoryAndStatus(

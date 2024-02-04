@@ -2,6 +2,7 @@ package kea.dpang.qna.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import kea.dpang.qna.base.ErrorResponse;
+import kea.dpang.qna.exception.FeignException;
 import kea.dpang.qna.exception.QnaNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(QnaNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleQnaNotFoundException(HttpServletRequest request, QnaNotFoundException ex) {
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage(), ex.getClass().getSimpleName(), request.getRequestURI(), LocalDateTime.now());
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(FeignException.class)
+    public ResponseEntity<ErrorResponse> handleFeignException(HttpServletRequest request, FeignException ex){
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage(), ex.getClass().getSimpleName(), request.getRequestURI(),LocalDateTime.now());
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 }

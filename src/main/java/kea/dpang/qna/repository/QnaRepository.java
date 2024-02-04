@@ -16,6 +16,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.data.web.JsonPath;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 public interface QnaRepository extends JpaRepository<Qna, Long>, JpaSpecificationExecutor<Qna> {
@@ -42,8 +43,8 @@ public interface QnaRepository extends JpaRepository<Qna, Long>, JpaSpecificatio
             @Param("category") Category category,
             @Param("itemId") Long itemId,
             @Param("status") Status status,
-            @Param("startDate") LocalDate startDate,
-            @Param("endDate") LocalDate endDate,
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate,
             Pageable pageable
     );
 }

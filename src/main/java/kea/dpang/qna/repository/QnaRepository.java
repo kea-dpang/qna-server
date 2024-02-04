@@ -37,7 +37,7 @@ public interface QnaRepository extends JpaRepository<Qna, Long>, JpaSpecificatio
             "  AND (q.category = :category OR :category IS NULL) " +
             "  AND (q.itemId = :itemId OR :itemId IS NULL)" +
             "  AND (q.status = :status OR :status IS NULL) " +
-            "  AND (:startDate IS NULL OR :endDate IS NULL OR q.createdAt BETWEEN :startDate AND :endDate)")
+            "  AND ((:startDate IS NULL OR :endDate IS NULL) OR (q.createdAt BETWEEN :startDate AND :endDate))")
     Page<Qna> findAllByUserIdAndCategoryAndStatus(
             @Param("userId") Long userId,
             @Param("category") Category category,

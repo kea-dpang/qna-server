@@ -47,8 +47,8 @@ public class QnaController {
             @RequestParam @Parameter(description = "카테고리") Optional<Category> category,
             @RequestParam @Parameter(description = "상품 ID") Optional<Long> itemId,
             @RequestParam @Parameter(description = "상태") Optional<Status> status,
-            @RequestParam @Parameter(description = "검색 시작 날짜") LocalDate startDate,
-            @RequestParam @Parameter(description = "검색 종료 날짜") LocalDate endDate,
+            @RequestParam @Parameter(description = "검색 시작 날짜") Optional<String> startDate,
+            @RequestParam @Parameter(description = "검색 종료 날짜") Optional<String> endDate,
             Pageable pageable
     ) {
         Page<QnaDto> qnaDtoPage = qnaService.getQnaList(userId, category, status,itemId, startDate, endDate, pageable);

@@ -1,6 +1,5 @@
 package kea.dpang.qna.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import kea.dpang.qna.base.SuccessResponse;
 import kea.dpang.qna.client.ItemServiceClient;
 import kea.dpang.qna.client.UserServiceClient;
@@ -68,8 +67,13 @@ public class QnaServiceImpl implements QnaService {
     }
 
     @Override
-    public Page<QnaDto> getQnaList(Optional<Long> userId, Optional<Category> category, Optional<Status> status, Optional<Long> itemId, LocalDate startDate, LocalDate endDate, Pageable pageable) {
+    public Page<QnaDto> getQnaList(Optional<Long> userId, Optional<Category> category, Optional<Status> status, Optional<Long> itemId, Optional<String> startDateString, Optional<String> endDateString, Pageable pageable) {
         log.info("사용자 ID: {}에 해당하는 QnA 목록을 조회합니다", userId.orElse(null));
+
+        LocalDate startDate = null;
+        LocalDate endDate = null;
+        if(startDateString.isPresent()) startDate = LocalDate.parse(startDateString.get());
+        if(endDateString.isPresent()) endDate = LocalDate.parse(endDateString.get());
 
         // userId, category, status의 값이 없을 경우 null로 처리한다.
         return qnaRepository.findAllByUserIdAndCategoryAndStatus(

@@ -51,7 +51,7 @@ public class QnaController {
             @RequestParam @Parameter(description = "검색 종료 날짜") Optional<String> endDate,
             Pageable pageable
     ) {
-        Page<QnaDto> qnaDtoPage = qnaService.getQnaList(userId, category, status,itemId, startDate, endDate, pageable);
+        Page<QnaDto> qnaDtoPage = qnaService.getQnaList(userId, category, status, itemId, startDate, endDate, pageable);
         return ResponseEntity.ok(new SuccessResponse<>(200, "QnA 목록 조회가 완료되었습니다.", qnaDtoPage));
     }
 
@@ -88,7 +88,7 @@ public class QnaController {
     @Operation(summary = "QnA 삭제", description = "ID에 해당하는 QnA를 삭제합니다.")
     public ResponseEntity<BaseResponse> deleteQna(
             @RequestBody @Parameter(description = "삭제할 QnA ID 리스트") DeleteQna deleteQna
-            ) {
+    ) {
         qnaService.deleteQna(deleteQna.getDeleteIds());
         return ResponseEntity.ok(new BaseResponse(200, "QnA 삭제가 완료되었습니다."));
     }

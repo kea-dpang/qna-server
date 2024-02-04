@@ -93,13 +93,14 @@ public class Qna {
      *
      * @return 변환된 QnaDto
      */
-    public QnaDto toQnaDto() {
+    public QnaDto toQnaDto(UserDto user) {
         return QnaDto.builder()
                 .qnaId(this.id)
                 .category(this.category)
                 .title(this.title)
                 .status(this.status)
                 .createdAt(this.createdAt)
+                .user(user)
                 .build();
     }
 

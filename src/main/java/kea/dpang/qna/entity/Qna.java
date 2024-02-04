@@ -108,13 +108,14 @@ public class Qna {
      *
      * @return 변환된 QnaDetailDto
      */
-    public QnaDetailDto toQnaDetailDto(UserDto userDto) {
+    public QnaDetailDto toQnaDetailDto(UserDto userDto, String itemName) {
         return QnaDetailDto.builder()
                 .qnaId(this.id)
                 .authorId(this.authorId)
                 .user(userDto)
                 .responderId(this.responderId)
                 .itemId(this.itemId)
+                .itemName(itemName)
                 .title(this.title)
                 .category(this.category)
                 .contents(this.contents)

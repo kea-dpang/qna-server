@@ -2,8 +2,10 @@ package kea.dpang.qna.service;
 
 import kea.dpang.qna.base.SuccessResponse;
 import kea.dpang.qna.client.ItemServiceClient;
+import kea.dpang.qna.client.NotificationClient;
 import kea.dpang.qna.client.UserServiceClient;
 import kea.dpang.qna.client.dto.RequestItemServiceDto;
+import kea.dpang.qna.client.dto.RequestNotificationDto;
 import kea.dpang.qna.dto.request.CreateQnaRequestDto;
 import kea.dpang.qna.dto.request.QnaAnswerRequest;
 import kea.dpang.qna.dto.request.UpdateQnaRequestDto;
@@ -39,6 +41,7 @@ public class QnaServiceImpl implements QnaService {
 
     private final UserServiceClient userServiceClient;
     private final ItemServiceClient itemServiceClient;
+    private final NotificationClient notificationClient;
 
     @Override
     public void createQna(CreateQnaRequestDto request) {
@@ -74,8 +77,8 @@ public class QnaServiceImpl implements QnaService {
 
         LocalDateTime startDate = null;
         LocalDateTime endDate = null;
-        if(startDateString.isPresent()) startDate = LocalDate.parse(startDateString.get()).atStartOfDay();
-        if(endDateString.isPresent()) endDate = LocalDate.parse(endDateString.get()).atStartOfDay().plusDays(1);
+        if (startDateString.isPresent()) startDate = LocalDate.parse(startDateString.get()).atStartOfDay();
+        if (endDateString.isPresent()) endDate = LocalDate.parse(endDateString.get()).atStartOfDay().plusDays(1);
 
         // userId, category, status의 값이 없을 경우 null로 처리한다.
         return qnaRepository.findAllByUserIdAndCategoryAndStatus(
@@ -107,7 +110,7 @@ public class QnaServiceImpl implements QnaService {
         }
 
         String itemName = null;
-        if(qna.getItemId()!=null) {
+        if (qna.getItemId() != null) {
             try {
                 ResponseEntity<SuccessResponse<RequestItemServiceDto>> responseEntity = itemServiceClient.getItemName(qna.getItemId());
                 itemName = responseEntity.getBody().getData().getName();
@@ -116,7 +119,7 @@ public class QnaServiceImpl implements QnaService {
             }
         }
 
-        return qna.toQnaDetailDto(user,itemName);
+        return qna.toQnaDetailDto(user, itemName);
     }
 
     @Override
@@ -125,9 +128,23 @@ public class QnaServiceImpl implements QnaService {
 
         // 데이터베이스에서 ID에 해당하는 QnA를 조회한다.
         // 조회한 QnA의 답변자 ID와 답변 내용을 업데이트한다.
-        qnaRepository.findById(id)
-                .orElseThrow(() -> new QnaNotFoundException(id))  // 해당하는 QnA가 없으면 예외를 발생시킨다.
-                .updateAnswer(request.getResponderId(), request.getAnswer());
+        Qna qna = qnaRepository.findById(id)
+                .orElseThrow(() -> new QnaNotFoundException(id));
+        // 해당하는 QnA가 없으면 예외를 발생시킨다.
+
+        qna.updateAnswer(request.getResponderId(), request.getAnswer());
+        log.info("{}번 QnA의 답변 등록",id);
+
+        notificationClient.postNotificationEmail(
+                header,
+                RequestNotificationDto.builder()
+                        .to(userServiceClient.getUser(qna.getAuthorId()).getBody().getData().getEmail())
+                        .title("답변: " + qna.getTitle())
+                        .body(request.getAnswer())
+                        .build()
+        );
+        log.info("사용자에게 이메일 전송");
+
     }
 
 }

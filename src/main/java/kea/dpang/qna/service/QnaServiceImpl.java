@@ -3,6 +3,7 @@ package kea.dpang.qna.service;
 import kea.dpang.qna.base.SuccessResponse;
 import kea.dpang.qna.client.ItemServiceClient;
 import kea.dpang.qna.client.UserServiceClient;
+import kea.dpang.qna.client.dto.RequestItemServiceDto;
 import kea.dpang.qna.dto.request.CreateQnaRequestDto;
 import kea.dpang.qna.dto.request.QnaAnswerRequest;
 import kea.dpang.qna.dto.request.UpdateQnaRequestDto;
@@ -108,8 +109,8 @@ public class QnaServiceImpl implements QnaService {
         String itemName = null;
         if(qna.getItemId()!=null) {
             try {
-                ResponseEntity<SuccessResponse<String>> responseEntity = itemServiceClient.getItemName(qna.getItemId());
-                itemName = responseEntity.getBody().getData();
+                ResponseEntity<SuccessResponse<RequestItemServiceDto>> responseEntity = itemServiceClient.getItemName(qna.getItemId());
+                itemName = responseEntity.getBody().getData().getName();
             } catch (Exception e) {
                 throw new FeignException("상품 정보를 가져오는 중에 오류가 발생했습니다: ", e);
             }

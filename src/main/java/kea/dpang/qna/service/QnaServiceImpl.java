@@ -136,7 +136,6 @@ public class QnaServiceImpl implements QnaService {
         log.info("{}번 QnA의 답변 등록",id);
 
         notificationClient.postNotificationEmail(
-                header,
                 RequestNotificationDto.builder()
                         .to(userServiceClient.getUser(qna.getAuthorId()).getBody().getData().getEmail())
                         .title("답변: " + qna.getTitle())

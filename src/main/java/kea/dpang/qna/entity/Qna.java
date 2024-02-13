@@ -86,6 +86,8 @@ public class Qna {
         this.responderId = responderId;
         this.answer = answer;
         this.status = Status.COMPLETED;
+
+
     }
 
     /**

@@ -9,7 +9,7 @@ public class NotificationFeignConfig {
 
     @Bean
     public RequestInterceptor requestInterceptor() {
-        return requesttemplate -> {
+        return template -> {
             template.header("X-DPANG-SERVICE-NAME", "QNA-SERVICE");
         };
     }
